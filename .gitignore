@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+build/
+*.apk
+*.jar
+
+# Local properties
+local.properties
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pem
+*.key
+
+# Misc
+.cache/
+*.log

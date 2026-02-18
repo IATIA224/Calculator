@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Top App Bar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/white" />
+
+        <!-- Scrollable Content -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/screen_padding">
+
+                <!-- ===== Daily Progress Card ===== -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardDailyProgress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_medium">
+
+                        <!-- Target row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/daily_target"
+                                android:textColor="@color/text_primary"
+                                android:textSize="@dimen/text_body"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvDailyTarget"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2000 kcal"
+                                android:textColor="@color/primary_dark"
+                                android:textSize="@dimen/text_subtitle"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <!-- Progress bar -->
+                        <ProgressBar
+                            android:id="@+id/progressDaily"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="12dp"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0"
+                            android:progressDrawable="@drawable/progress_calories" />
+
+                        <!-- Consumed / Remaining -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvConsumed"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Consumed: 0 kcal"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_caption" />
+
+                            <TextView
+                                android:id="@+id/tvRemaining"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Remaining: 2000 kcal"
+                                android:textColor="@color/primary"
+                                android:textSize="@dimen/text_caption" />
+
+                        </LinearLayout>
+
+                        <!-- Meal summary row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/meal_morning"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/tvMorningCal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/calories_color"
+                                    android:textSize="@dimen/text_body"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/divider" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/meal_afternoon"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/tvAfternoonCal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/calories_color"
+                                    android:textSize="@dimen/text_body"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/divider" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/meal_evening"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/tvEveningCal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textColor="@color/calories_color"
+                                    android:textSize="@dimen/text_body"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Edit profile link -->
+                        <TextView
+                            android:id="@+id/tvEditProfile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text="@string/edit_profile"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/text_caption" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- ===== Image Preview Card ===== -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/image_preview_height"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation">
+
+                    <ImageView
+                        android:id="@+id/imagePreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/food_image_preview"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_food_placeholder" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- ===== Camera / Gallery Buttons ===== -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCamera"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_small"
+                        android:layout_weight="1"
+                        android:text="@string/btn_camera"
+                        app:icon="@android:drawable/ic_menu_camera" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGallery"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_small"
+                        android:layout_weight="1"
+                        android:text="@string/btn_gallery"
+                        app:icon="@android:drawable/ic_menu_gallery" />
+
+                </LinearLayout>
+
+                <!-- ===== Optional context text input ===== -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilFoodContext"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:hint="@string/hint_food_context">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFoodContext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:maxLines="2" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ===== Analyze Button ===== -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAnalyze"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:text="@string/btn_analyze"
+                    android:textSize="@dimen/text_button"
+                    app:backgroundTint="@color/primary" />
+
+                <!-- ===== No Results Message ===== -->
+                <TextView
+                    android:id="@+id/tvNoResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:gravity="center"
+                    android:text="@string/no_results"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_body"
+                    android:visibility="gone" />
+
+                <!-- ===== Food RecyclerView ===== -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerFood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:nestedScrollingEnabled="false" />
+
+                <!-- ===== Scan Totals Card (from current AI scan) ===== -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardTotals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    app:cardBackgroundColor="@color/primary_light"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="@dimen/card_elevation">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Macro totals row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/spacing_medium">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_calories"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="@dimen/text_caption" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalCalories"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 kcal"
+                                    android:textColor="@color/calories_color"
+                                    android:textSize="@dimen/text_subtitle"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/divider" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_protein"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="@dimen/text_caption" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalProtein"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 g"
+                                    android:textColor="@color/protein_color"
+                                    android:textSize="@dimen/text_subtitle"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/divider" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_carbs"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="@dimen/text_caption" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalCarbs"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 g"
+                                    android:textColor="@color/carbs_color"
+                                    android:textSize="@dimen/text_subtitle"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/divider" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/total_fat"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="@dimen/text_caption" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalFat"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 g"
+                                    android:textColor="@color/fat_color"
+                                    android:textSize="@dimen/text_subtitle"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Add as Meal buttons -->
+                        <LinearLayout
+                            android:id="@+id/layoutMealButtons"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/spacing_small"
+                            android:paddingEnd="@dimen/spacing_small"
+                            android:paddingBottom="@dimen/spacing_medium"
+                            android:visibility="gone">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnAddMorning"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/add_morning"
+                                android:textSize="11sp"
+                                app:iconSize="16dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnAddAfternoon"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/add_afternoon"
+                                android:textSize="11sp"
+                                app:iconSize="16dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnAddEvening"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/add_evening"
+                                android:textSize="11sp"
+                                app:iconSize="16dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Bottom spacing -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing_medium" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+    <!-- ===== Loading Overlay ===== -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_large">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminate="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:text="@string/analyzing"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_body" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

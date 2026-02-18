@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_small"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_medium">
+
+        <!-- Food Name -->
+        <TextView
+            android:id="@+id/tvFoodName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Food Name"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_subtitle"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/tvConfidence"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Confidence Badge -->
+        <TextView
+            android:id="@+id/tvConfidence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_card"
+            android:paddingStart="8dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="2dp"
+            android:text="95%"
+            android:textColor="@color/primary_dark"
+            android:textSize="@dimen/text_caption"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Per-100g Reference -->
+        <TextView
+            android:id="@+id/tvPer100g"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Per 100g: 0 kcal | 0g protein"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_caption"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvFoodName" />
+
+        <!-- Portion Input Row -->
+        <TextView
+            android:id="@+id/tvPortionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:text="@string/portion_label"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_body"
+            app:layout_constraintBottom_toBottomOf="@id/etGrams"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etGrams" />
+
+        <EditText
+            android:id="@+id/etGrams"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@drawable/rounded_card"
+            android:hint="100"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:padding="@dimen/spacing_small"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_body"
+            app:layout_constraintStart_toEndOf="@id/tvPortionLabel"
+            app:layout_constraintTop_toBottomOf="@id/tvPer100g" />
+
+        <TextView
+            android:id="@+id/tvGramsUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="g"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_body"
+            app:layout_constraintBottom_toBottomOf="@id/etGrams"
+            app:layout_constraintStart_toEndOf="@id/etGrams"
+            app:layout_constraintTop_toTopOf="@id/etGrams" />
+
+        <!-- Nutrition Values Row -->
+        <LinearLayout
+            android:id="@+id/nutritionRow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etGrams">
+
+            <!-- Calories -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_calories"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_caption" />
+
+                <TextView
+                    android:id="@+id/tvCalories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 kcal"
+                    android:textColor="@color/calories_color"
+                    android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Protein -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_protein"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_caption" />
+
+                <TextView
+                    android:id="@+id/tvProtein"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 g"
+                    android:textColor="@color/protein_color"
+                    android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Carbs -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_carbs"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_caption" />
+
+                <TextView
+                    android:id="@+id/tvCarbs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 g"
+                    android:textColor="@color/carbs_color"
+                    android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Fat -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_fat"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_caption" />
+
+                <TextView
+                    android:id="@+id/tvFat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 g"
+                    android:textColor="@color/fat_color"
+                    android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
