@@ -1,146 +1,78 @@
-# CalMahAhh — AI Food Calorie & Protein Tracker
+# CalMahAhh 🐕 — AI Food Tracker with Gemini Vision
 
-An Android app that captures or picks a food image, detects food items using
-**Clarifai** (image recognition), retrieves nutrition data from **Edamam**
-(food database), and lets you adjust portion sizes to see total calories and
-protein at a glance.
+A sleek Android app that identifies foods using **Google Gemini Vision AI**, estimates portions, calculates full macronutrient breakdowns (calories, protein, carbs, fat), and tracks your daily intake against a personalized calorie target based on TDEE calculations.
 
 ---
 
-## Prerequisites
+## Features
 
-| Tool | Version | Notes |
-|------|---------|-------|
-| **JDK** | 17+ | `java -version` to verify |
-| **Android SDK** | API 34 (compileSdk) | Install via Android Studio SDK Manager or `sdkmanager` CLI |
-| **Gradle** | 8.4 | Handled automatically by the Gradle Wrapper |
-
-You also need the `ANDROID_HOME` (or `ANDROID_SDK_ROOT`) environment variable
-pointing at your SDK directory. Create a `local.properties` file in the project
-root if the build complains:
-
-```properties
-# Windows example:
-sdk.dir=C\:\\Users\\YourName\\AppData\\Local\\Android\\Sdk
-```
+✅ **Gemini Vision AI** — Snap a photo of your food; AI identifies it and estimates weight  
+✅ **TDEE Calculator** — First-run survey (age, weight, height, activity level, goal) calculates your daily calorie target  
+✅ **Macro Tracking** — See calories, protein, carbs, fat per food item & daily totals  
+✅ **Meal Logging** — Add scanned foods to Morning / Afternoon / Evening meals  
+✅ **Daily Progress** — Visual progress bar shows consumed vs. target calories  
+✅ **Editable Portions** — Adjust portion sizes and see totals update live  
+✅ **Profile Management** — Edit your profile anytime with back button (no forced save)  
+✅ **Dog Icon** — 🐕 CAPY.png mascot in app launcher
 
 ---
 
-## Getting Free API Keys
+## Setup & Installation
 
-### 1. Clarifai — Food Image Recognition
+### 1. Get Google Gemini API Key (Free)
 
-| | |
-|---|---|
-| **Sign up** | <https://clarifai.com/signup> |
-| **Free tier** | Community plan — **1 000 operations / month** |
-| **Get PAT** | Settings → Security → Personal Access Tokens → Create |
-| **Stay free** | Do **not** enable billing; the community plan auto-limits |
-
-Paste your PAT into `Constants.java`:
-```java
-public static final String CLARIFAI_PAT = "your_pat_here";
-```
-
-### 2A. ⭐ USDA FoodData Central API (nutrition data) — **Completely Free, No Credit Card**
-
-Recommended free alternative to Edamam.
-
-| | |
-|---|---|
-| **Sign up** | <https://fdc.nal.usda.gov/api-key/> |
-| **Free tier** | Unlimited requests |
-| **Get key** | Enter email → receive API key automatically |
-| **No credit card required** | Yes ✓ |
-
-**To use USDA instead:**
-1. Get free API key from the link above.
-2. Replace `EdamamService` with `USDAService` in the code.
-3. The app will work identically.
-
-### 2B. Edamam — Food Database API (nutrition data) — **Paid Plans Only**
-
-Edamam no longer offers a completely free developer plan.
-
-| | |
-|---|---|
-| **Sign up** | <https://developer.edamam.com/edamam-docs-food-database-api> |
-| **Cheapest plan** | Basic Vision — **$14/month** (includes 30-day free trial, requires credit card) |
-| **Get keys** | After subscription → Dashboard → Applications → Food Database |
-| **Free component** | Food database API is bundled with paid plans |
-
-**If you want completely free → use USDA FoodData Central instead.**
-
-Paste your credentials into `Constants.java`:
-```java
-public static final String EDAMAM_APP_ID  = "your_app_id";
-public static final String EDAMAM_APP_KEY = "your_app_key";
-```
-
----
-
-## Switching Between USDA (Free) and Edamam (Paid)
-
-The app comes with **USDA as the default** (completely free).
-
-### To use USDA (recommended):
-
-1. Get your free API key from <https://fdc.nal.usda.gov/api-key/>
-2. Paste it into [Constants.java](app/src/main/java/com/calmahahh/app/Constants.java):
+1. Visit **[Google AI Studio](https://aistudio.google.com/apikey)**
+2. Click **"Create API Key"**
+3. Copy the key
+4. Paste into `app/src/main/java/com/calmahahh/app/Constants.java`:
    ```java
-   public static final String USDA_API_KEY = "your_key_here";
+   public static final String GEMINI_API_KEY = "your_key_here";
    ```
-3. The code in [MainActivity.java](app/src/main/java/com/calmahahh/app/MainActivity.java) already uses USDA.
 
-### To switch to Edamam:
+**Free tier limits:**
+- 15 requests/minute
+- 1 million tokens/day
+- No credit card required ✓
 
-1. Subscribe to Basic Vision plan ($14/month): <https://developer.edamam.com/edamam-docs-food-database-api>
-2. Copy your App ID and App Key into [Constants.java](app/src/main/java/com/calmahahh/app/Constants.java)
-3. In [MainActivity.java](app/src/main/java/com/calmahahh/app/MainActivity.java), find the comment `// ===== Choose nutrition API =====` (around line 290)
-4. Comment out the USDA lines and uncomment the Edamam lines
-5. Rebuild: `.\gradlew.bat assembleDebug`
+### 2. Build & Install
 
----
+**Requirements:**
+- JDK 17+
+- Android SDK (API 34+)
+- Gradle 8.4+
 
+**Build the APK:**
 ```bash
-# Windows
-gradlew.bat assembleDebug
-
-# macOS / Linux
+cd CalMahAhh
 ./gradlew assembleDebug
 ```
 
-Output: `app/build/outputs/apk/debug/app-debug.apk`
-
-### Release APK
-
+**Install on device:**
 ```bash
-gradlew.bat assembleRelease
-```
-
-> For a signed release build you need a keystore — see
-> [Android signing docs](https://developer.android.com/studio/publish/app-signing).
-
-### Install on connected device
-
-```bash
-gradlew.bat installDebug
+./gradlew installDebug
 ```
 
 ---
 
-## If the Gradle Wrapper is missing
+## Usage
 
-If `gradlew.bat` and `gradle/wrapper/gradle-wrapper.jar` are not present,
-generate them with an existing Gradle installation:
+### First Launch
+1. **Survey Screen** — Enter your stats (gender, age, weight, height, activity level, goal)
+2. View your calculated **daily calorie target**
+3. Save → Go to home screen
 
-```bash
-gradle wrapper --gradle-version 8.4
-```
+### Home Screen
+1. **Tap Camera or Gallery** — Pick a food image
+2. **(Optional) Add context** — E.g., "200g tofu" to improve AI accuracy
+3. **Tap "Analyze Food"** — Gemini AI identifies foods & estimates portions
+4. **Adjust portions** — Edit grams; macros recalculate instantly
+5. **Add to Meal** — Tap "+ Morning / + Afternoon / + Evening" to log the meal
+6. **Track Progress** — Daily progress card shows consumed vs. target in real-time
 
-Or download the Gradle Wrapper JAR manually from
-<https://services.gradle.org/distributions/gradle-8.4-bin.zip>, extract
-`lib/gradle-wrapper.jar`, and place it in `gradle/wrapper/`.
+### Edit Profile
+- Tap **"Edit Profile"** on home screen
+- Update your stats
+- Tap **Save** to apply or **Back** to discard changes
 
 ---
 
@@ -148,96 +80,77 @@ Or download the Gradle Wrapper JAR manually from
 
 ```
 CalMahAhh/
-├── build.gradle                        # root build script
-├── settings.gradle
-├── gradle.properties
-├── gradle/wrapper/
-│   └── gradle-wrapper.properties
-├── app/
-│   ├── build.gradle                    # app module build script
-│   ├── proguard-rules.pro
-│   └── src/main/
-│       ├── AndroidManifest.xml
-│       ├── res/
-│       │   ├── layout/
-│       │   │   ├── activity_main.xml   # main screen layout
-│       │   │   └── item_food.xml       # RecyclerView item
-│       │   ├── values/                 # strings, colors, themes, dimens
-│       │   ├── values-sw600dp/         # tablet dimension overrides
-│       │   ├── drawable/               # shapes, vector icons
-│       │   ├── mipmap-anydpi-v26/      # adaptive launcher icon
-│       │   └── xml/file_paths.xml      # FileProvider config
-│       └── java/com/calmahahh/app/
-│           ├── Constants.java          # API keys (edit this!)
-│           ├── MainActivity.java       # main activity
-│           ├── adapter/
-│           │   └── FoodAdapter.java    # RecyclerView adapter
-│           ├── api/
-│           │   ├── ApiClient.java      # Retrofit singletons
-│           │   ├── ClarifaiService.java
-│           │   ├── ClarifaiRequest.java
-│           │   ├── ClarifaiResponse.java
-│           │   ├── EdamamService.java
-│           │   └── EdamamResponse.java
-│           ├── model/
-│           │   └── FoodItem.java       # food data model
-│           └── util/
-│               ├── ImageUtils.java     # image resize + Base64
-│               ├── NetworkUtils.java   # connectivity check
-│               └── NutritionCalculator.java
+├── app/src/main/java/com/calmahahh/app/
+│   ├── MainActivity.java              # Main home screen, food scanning
+│   ├── SurveyActivity.java            # TDEE survey (first-run & edit mode)
+│   ├── Constants.java                 # API keys
+│   ├── model/
+│   │   ├── UserProfile.java           # TDEE calculation & persistence
+│   │   ├── FoodItem.java              # Food data model
+│   │   └── MealLog.java               # Daily meal tracking
+│   ├── api/
+│   │   ├── GeminiService.java         # Gemini API (Retrofit)
+│   │   ├── GeminiRequest.java         # Request builder
+│   │   └── GeminiResponse.java        # Response parser
+│   ├── adapter/
+│   │   └── FoodAdapter.java           # RecyclerView for food items
+│   └── util/
+│       ├── ImageUtils.java            # Image compression & base64
+│       ├── NetworkUtils.java          # Network checks
+│       └── NutritionCalculator.java   # Macro aggregation
+├── app/src/main/res/
+│   ├── layout/
+│   │   ├── activity_main.xml          # Home screen
+│   │   ├── activity_survey.xml        # Survey form
+│   │   └── item_food.xml              # Food list item
+│   └── values/
+│       ├── strings.xml                # UI text
+│       ├── colors.xml                 # Color palette
+│       ├── dimens.xml                 # Dimensions
+│       └── themes.xml                 # Material 3 theme
+└── build.gradle                       # Dependencies (Retrofit, Gson, Material)
 ```
 
 ---
 
-## How It Works
+## TDEE Calculation
 
-1. **Capture / Pick image** — Camera or gallery intent.
-2. **Clarifai API** — Base64 image → top food labels (confidence ≥ 50 %).
-3. **Edamam API** — Each label → calories & protein per 100 g.
-4. **Display** — RecyclerView cards with editable portion (grams).
-5. **Totals** — `calories = (caloriesPer100g × grams) / 100`.
+**BMR Formula:**
+- **Mifflin-St Jeor** (default): Uses age, weight, height, gender
+- **Katch-McArdle** (if body fat % provided): Uses lean body mass
 
-### Error Handling
+**TDEE:** BMR × Activity Multiplier (1.2 to 1.9 based on activity level)
 
-| Situation | Behaviour |
-|-----------|-----------|
-| No internet | Toast: *"No internet connection …"* |
-| API failure | Toast with HTTP code |
-| No food detected | In-line message: *"No food items detected …"* |
-| Nutrition lookup fails for one item | Item silently skipped |
+**Daily Target:**
+- **Cut:** TDEE − (0.5 kg/week × 1100 kcal)
+- **Maintain:** TDEE
+- **Bulk:** TDEE + (0.5 kg/week × 1100 kcal)
 
 ---
 
-## Permissions
+## Dependencies
 
-| Permission | Why |
-|---|---|
-| `INTERNET` | API calls to Clarifai + Edamam |
-| `CAMERA` | Capture food photo |
-| `ACCESS_NETWORK_STATE` | Check connectivity before API calls |
-
----
-
-## Responsiveness
-
-- **ConstraintLayout** for flexible positioning.
-- **NestedScrollView** wraps the whole page for scrollable content.
-- Dimensions use **dp** (spacing/margins) and **sp** (text).
-- `values-sw600dp/dimens.xml` overrides for tablets (≥ 600 dp width).
-- Images use `adjustViewBounds` + `centerCrop` / `centerInside`.
+- **Retrofit 2** — REST API calls
+- **Gson** — JSON parsing
+- **Material Design 3** — UI components
+- **Core Android** — Permissions, shared preferences
 
 ---
 
-## Daily Free Limits — Stay Safe
+## APK Download
 
-| API | Free Tier Limit | Credit Card Required |
-|-----|-----------------|---------------------|
-| **Clarifai** | 1,000 ops/month | No ✓ |
-| **USDA FoodData** | Unlimited | No ✓ |
-| **Edamam** | ~200 req/min | Yes ($14/month after 30-day trial) |
+**Latest Release:** [CalMahAhh v1.0](../../releases)
+
+Download `CalMahAhh-debug.apk` and install on your Android device (API 34+).
 
 ---
 
 ## License
 
-This project is provided as-is for educational purposes.
+Open source. Feel free to modify and share!
+
+---
+
+## Author
+
+Built with ❤️ for food tracking.
