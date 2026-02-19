@@ -21,6 +21,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,8 +41,12 @@ import com.calmahahh.app.util.NetworkUtils;
 import com.calmahahh.app.util.NutritionCalculator;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import com.calmahahh.app.notification.TaskNotificationManager;
+import com.calmahahh.app.util.DarkModeManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
     private TextView tvEditProfile;
     private ProgressBar progressDaily;
     private MaterialButton btnStats, btnMeals;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
     // --- Data ---
     private FoodAdapter foodAdapter;
@@ -141,6 +149,9 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Apply saved dark mode preference
+        DarkModeManager.applyDarkModePreference(this);
+
         // Redirect to survey if not completed
         if (!UserProfile.isSurveyCompleted(this)) {
             startActivity(new Intent(this, SurveyActivity.class));
@@ -151,6 +162,9 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
         setContentView(R.layout.activity_main);
         userProfile = UserProfile.load(this);
         mealEntryDao = AppDatabase.getInstance(this).mealEntryDao();
+
+        // Initialize notification channel for planner reminders
+        TaskNotificationManager.createNotificationChannel(this);
 
         initViews();
         initLaunchers();
@@ -182,6 +196,11 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
     private void initViews() {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Navigation drawer
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigationView);
+        toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         imagePreview    = findViewById(R.id.imagePreview);
         btnCamera       = findViewById(R.id.btnCamera);
@@ -276,6 +295,34 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
     }
 
     private void setupClickListeners() {
+        // Navigation drawer item clicks
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            drawerLayout.closeDrawer(GravityCompat.START);
+            if (id == R.id.nav_home) {
+                // Already on home
+            } else if (id == R.id.nav_planner) {
+                startActivity(new Intent(this, PlannerActivity.class));
+            } else if (id == R.id.nav_today) {
+                startActivity(new Intent(this, TodayActivity.class));
+            } else if (id == R.id.nav_planner_stats) {
+                startActivity(new Intent(this, PlannerStatsActivity.class));
+            } else if (id == R.id.nav_calorie_stats) {
+                startActivity(new Intent(this, StatsActivity.class));
+            } else if (id == R.id.nav_meals) {
+                Intent intent = new Intent(this, MealDetailActivity.class);
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+                intent.putExtra("date", today);
+                startActivity(intent);
+            } else if (id == R.id.nav_edit_profile) {
+                startActivity(new Intent(this, SurveyActivity.class));
+            } else if (id == R.id.nav_dark_mode) {
+                DarkModeManager.toggleDarkMode(this);
+                Toast.makeText(this, DarkModeManager.isDarkModeEnabled(this) ? "Dark mode enabled" : "Light mode enabled", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
+
         btnCamera.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                     == PackageManager.PERMISSION_GRANTED) {

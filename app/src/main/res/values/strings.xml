@@ -61,4 +61,13 @@
     <string name="add_dinner">+ Dinner</string>
     <string name="statistics">Statistics</string>
     <string name="todays_meals">Today\'s Meals</string>
+
+    <!-- Planner -->
+    <string name="planner">Planner</string>
+    <string name="today">Today</string>
+    <string name="planner_stats">Planner Statistics</string>
+    <string name="add_task">Add Task</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="create_plan">Create Plan</string>
+    <string name="no_tasks_today">No tasks scheduled for today</string>
 </resources>

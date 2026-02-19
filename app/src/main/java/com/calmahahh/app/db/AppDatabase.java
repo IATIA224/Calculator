@@ -8,15 +8,26 @@ import androidx.room.RoomDatabase;
 
 /**
  * Room database for the CalMahAhh app.
- * Stores daily summaries and individual meal entries.
+ * Stores daily summaries, meal entries, plans, tasks, completions, and workout history.
  */
-@Database(entities = {DailySummary.class, MealEntry.class}, version = 1, exportSchema = false)
+@Database(entities = {
+        DailySummary.class,
+        MealEntry.class,
+        Plan.class,
+        PlanTask.class,
+        TaskCompletion.class,
+        WorkoutHistory.class
+}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
 
     public abstract DailySummaryDao dailySummaryDao();
     public abstract MealEntryDao mealEntryDao();
+    public abstract PlanDao planDao();
+    public abstract PlanTaskDao planTaskDao();
+    public abstract TaskCompletionDao taskCompletionDao();
+    public abstract WorkoutHistoryDao workoutHistoryDao();
 
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
