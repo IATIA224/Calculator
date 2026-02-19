@@ -18,6 +18,16 @@
         android:usesCleartextTraffic="false">
 
         <activity
+            android:name=".StatsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".MealDetailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".SurveyActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

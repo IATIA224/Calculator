@@ -28,6 +28,9 @@ import com.calmahahh.app.adapter.FoodAdapter;
 import com.calmahahh.app.api.ApiClient;
 import com.calmahahh.app.api.GeminiRequest;
 import com.calmahahh.app.api.GeminiResponse;
+import com.calmahahh.app.db.AppDatabase;
+import com.calmahahh.app.db.MealEntry;
+import com.calmahahh.app.db.MealEntryDao;
 import com.calmahahh.app.model.FoodItem;
 import com.calmahahh.app.model.MealLog;
 import com.calmahahh.app.model.UserProfile;
@@ -63,7 +66,7 @@ import retrofit2.Response;
  * 4. Image + context sent to Google Gemini Vision AI.
  * 5. AI identifies foods, estimates portions, calculates macros.
  * 6. Results shown in RecyclerView; user can edit portion sizes.
- * 7. User adds scanned foods to Morning / Afternoon / Evening meal.
+ * 7. User adds scanned foods to Breakfast / Lunch / Dinner meal.
  * 8. Daily progress bar tracks consumed vs target calories.
  */
 public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPortionChangedListener {
@@ -71,15 +74,16 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
     // --- UI ---
     private ImageView imagePreview;
     private MaterialButton btnCamera, btnGallery, btnAnalyze;
-    private MaterialButton btnAddMorning, btnAddAfternoon, btnAddEvening;
+    private MaterialButton btnAddBreakfast, btnAddLunch, btnAddDinner;
     private EditText etFoodContext;
     private RecyclerView recyclerFood;
     private View loadingOverlay, layoutMealButtons;
     private TextView tvTotalCalories, tvTotalProtein, tvTotalCarbs, tvTotalFat, tvNoResults;
     private TextView tvDailyTarget, tvConsumed, tvRemaining;
-    private TextView tvMorningCal, tvAfternoonCal, tvEveningCal;
+    private TextView tvBreakfastCal, tvLunchCal, tvDinnerCal;
     private TextView tvEditProfile;
     private ProgressBar progressDaily;
+    private MaterialButton btnStats, btnMeals;
 
     // --- Data ---
     private FoodAdapter foodAdapter;
@@ -88,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
     private Uri photoUri;
     private final Gson gson = new Gson();
     private UserProfile userProfile;
+    private MealEntryDao mealEntryDao;
 
     // --- Threading ---
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -145,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
 
         setContentView(R.layout.activity_main);
         userProfile = UserProfile.load(this);
+        mealEntryDao = AppDatabase.getInstance(this).mealEntryDao();
 
         initViews();
         initLaunchers();
@@ -194,17 +200,21 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
         tvDailyTarget   = findViewById(R.id.tvDailyTarget);
         tvConsumed      = findViewById(R.id.tvConsumed);
         tvRemaining     = findViewById(R.id.tvRemaining);
-        tvMorningCal    = findViewById(R.id.tvMorningCal);
-        tvAfternoonCal  = findViewById(R.id.tvAfternoonCal);
-        tvEveningCal    = findViewById(R.id.tvEveningCal);
+        tvBreakfastCal  = findViewById(R.id.tvBreakfastCal);
+        tvLunchCal      = findViewById(R.id.tvLunchCal);
+        tvDinnerCal     = findViewById(R.id.tvDinnerCal);
         tvEditProfile   = findViewById(R.id.tvEditProfile);
         progressDaily   = findViewById(R.id.progressDaily);
 
         // Meal buttons
         layoutMealButtons = findViewById(R.id.layoutMealButtons);
-        btnAddMorning    = findViewById(R.id.btnAddMorning);
-        btnAddAfternoon  = findViewById(R.id.btnAddAfternoon);
-        btnAddEvening    = findViewById(R.id.btnAddEvening);
+        btnAddBreakfast  = findViewById(R.id.btnAddBreakfast);
+        btnAddLunch      = findViewById(R.id.btnAddLunch);
+        btnAddDinner     = findViewById(R.id.btnAddDinner);
+
+        // Navigation buttons
+        btnStats = findViewById(R.id.btnStats);
+        btnMeals = findViewById(R.id.btnMeals);
 
         btnAnalyze.setEnabled(false);
     }
@@ -285,9 +295,18 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
         btnAnalyze.setOnClickListener(v -> analyzeImage());
 
         // Meal buttons
-        btnAddMorning.setOnClickListener(v -> addMealAndRefresh(MealLog.MEAL_MORNING));
-        btnAddAfternoon.setOnClickListener(v -> addMealAndRefresh(MealLog.MEAL_AFTERNOON));
-        btnAddEvening.setOnClickListener(v -> addMealAndRefresh(MealLog.MEAL_EVENING));
+        btnAddBreakfast.setOnClickListener(v -> addMealAndRefresh(Constants.MEAL_BREAKFAST));
+        btnAddLunch.setOnClickListener(v -> addMealAndRefresh(Constants.MEAL_LUNCH));
+        btnAddDinner.setOnClickListener(v -> addMealAndRefresh(Constants.MEAL_DINNER));
+
+        // Navigation buttons
+        btnStats.setOnClickListener(v -> startActivity(new Intent(this, StatsActivity.class)));
+        btnMeals.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MealDetailActivity.class);
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+            intent.putExtra("date", today);
+            startActivity(intent);
+        });
 
         // Edit profile
         tvEditProfile.setOnClickListener(v -> {
@@ -297,15 +316,30 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
         });
     }
 
-    private void addMealAndRefresh(int mealType) {
+    private void addMealAndRefresh(String mealType) {
         if (foodItems.isEmpty()) {
             showError("Scan food first before adding a meal");
             return;
         }
-        MealLog.addMeal(this, mealType, foodItems);
-        String name = MealLog.MEAL_NAMES[mealType];
-        Toast.makeText(this, "Added to " + name + "!", Toast.LENGTH_SHORT).show();
-        refreshDailyProgress();
+
+        // Save to Room DB
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+        executor.execute(() -> {
+            for (FoodItem item : foodItems) {
+                MealEntry entry = new MealEntry(
+                        today, mealType, item.getName(),
+                        item.getCalculatedCalories(), item.getCalculatedProtein(),
+                        item.getCalculatedCarbs(), item.getCalculatedFat(),
+                        item.getGrams());
+                mealEntryDao.insert(entry);
+            }
+            // Also save to SharedPreferences for backward compat
+            mainHandler.post(() -> {
+                MealLog.addMealByName(this, mealType, foodItems);
+                Toast.makeText(this, "Added to " + mealType + "!", Toast.LENGTH_SHORT).show();
+                refreshDailyProgress();
+            });
+        });
     }
 
     // ---------------------------------------------------------------
@@ -345,8 +379,8 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
         }
 
         String apiKey = Constants.GEMINI_API_KEY;
-        if (apiKey.equals("YOUR_GEMINI_API_KEY_HERE") || apiKey.isEmpty()) {
-            showError("Please set your Gemini API key in Constants.java");
+        if (apiKey == null || apiKey.isEmpty() || apiKey.equals("YOUR_GEMINI_API_KEY_HERE") || apiKey.equals("PASTE_YOUR_NEW_API_KEY_HERE")) {
+            showError("Please set your Gemini API key in secrets.properties");
             return;
         }
 
@@ -545,33 +579,52 @@ public class MainActivity extends AppCompatActivity implements FoodAdapter.OnPor
         if (userProfile == null) return;
 
         int target = userProfile.getTargetCalories();
-        MealLog.DailyLog log = MealLog.loadToday(this);
-        double consumed = log.getTotalCalories();
-        double remaining = Math.max(0, target - consumed);
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
 
-        tvDailyTarget.setText(String.format(Locale.US, "%,d kcal", target));
-        tvConsumed.setText(String.format(Locale.US, "Consumed: %.0f kcal", consumed));
-        tvRemaining.setText(String.format(Locale.US, "Remaining: %.0f kcal", remaining));
+        executor.execute(() -> {
+            double consumed = mealEntryDao.getTotalCaloriesForDate(today);
+            double breakfastCal = mealEntryDao.getMealCalories(today, Constants.MEAL_BREAKFAST);
+            double lunchCal = mealEntryDao.getMealCalories(today, Constants.MEAL_LUNCH);
+            double dinnerCal = mealEntryDao.getMealCalories(today, Constants.MEAL_DINNER);
 
-        // Progress bar (cap at 100%)
-        int percent = target > 0 ? (int) Math.min(100, (consumed / target) * 100) : 0;
-        progressDaily.setProgress(percent);
+            // Fall back to SharedPreferences if Room is empty
+            if (consumed == 0) {
+                MealLog.DailyLog log = MealLog.loadToday(this);
+                consumed = log.getTotalCalories();
+                breakfastCal = log.getMealCalories(Constants.MEAL_BREAKFAST);
+                lunchCal = log.getMealCalories(Constants.MEAL_LUNCH);
+                dinnerCal = log.getMealCalories(Constants.MEAL_DINNER);
+            }
 
-        // Per-meal breakdown
-        tvMorningCal.setText(String.format(Locale.US, "%.0f", log.getMealCalories("Morning")));
-        tvAfternoonCal.setText(String.format(Locale.US, "%.0f", log.getMealCalories("Afternoon")));
-        tvEveningCal.setText(String.format(Locale.US, "%.0f", log.getMealCalories("Evening")));
+            double remaining = Math.max(0, target - consumed);
+            final double c = consumed, bc = breakfastCal, lc = lunchCal, dc = dinnerCal, r = remaining;
 
-        // Color the progress bar: green if under, orange if near, red if over
-        int color;
-        if (percent > 100) {
-            color = 0xFFF44336; // red
-        } else if (percent > 90) {
-            color = 0xFFFF9800; // orange
-        } else {
-            color = 0xFF4CAF50; // green
-        }
-        progressDaily.getProgressDrawable().setColorFilter(
-                color, android.graphics.PorterDuff.Mode.SRC_IN);
+            mainHandler.post(() -> {
+                tvDailyTarget.setText(String.format(Locale.US, "%,d kcal", target));
+                tvConsumed.setText(String.format(Locale.US, "Consumed: %.0f kcal", c));
+                tvRemaining.setText(String.format(Locale.US, "Remaining: %.0f kcal", r));
+
+                // Progress bar (cap at 100%)
+                int percent = target > 0 ? (int) Math.min(100, (c / target) * 100) : 0;
+                progressDaily.setProgress(percent);
+
+                // Per-meal breakdown
+                tvBreakfastCal.setText(String.format(Locale.US, "%.0f", bc));
+                tvLunchCal.setText(String.format(Locale.US, "%.0f", lc));
+                tvDinnerCal.setText(String.format(Locale.US, "%.0f", dc));
+
+                // Color the progress bar
+                int color;
+                if (percent > 100) {
+                    color = 0xFFF44336; // red
+                } else if (percent > 90) {
+                    color = 0xFFFF9800; // orange
+                } else {
+                    color = 0xFF4CAF50; // green
+                }
+                progressDaily.getProgressDrawable().setColorFilter(
+                        color, android.graphics.PorterDuff.Mode.SRC_IN);
+            });
+        });
     }
 }

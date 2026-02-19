@@ -14,24 +14,24 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Tracks daily meal logs: Morning, Afternoon, Evening.
+ * Tracks daily meal logs: Breakfast, Lunch, Dinner.
  * Each meal stores a list of FoodItems and their total calories.
  * Persisted daily via SharedPreferences (keyed by date).
  */
 public class MealLog {
 
-    public static final int MEAL_MORNING   = 0;
-    public static final int MEAL_AFTERNOON = 1;
-    public static final int MEAL_EVENING   = 2;
+    public static final int MEAL_BREAKFAST = 0;
+    public static final int MEAL_LUNCH     = 1;
+    public static final int MEAL_DINNER    = 2;
 
-    public static final String[] MEAL_NAMES = {"Morning", "Afternoon", "Evening"};
+    public static final String[] MEAL_NAMES = {"Breakfast", "Lunch", "Dinner"};
 
     private static final String PREFS_NAME = "calmahahh_meal_log";
     private static final Gson gson = new Gson();
 
     /** A single logged meal entry */
     public static class MealEntry {
-        public String mealName;    // "Morning", "Afternoon", "Evening"
+        public String mealName;    // "Breakfast", "Lunch", "Dinner"
         public List<FoodSnapshot> foods;
         public double totalCalories;
         public double totalProtein;
@@ -135,12 +135,21 @@ public class MealLog {
     /**
      * Add a meal to today's log from scanned food items.
      * @param context  Android context
-     * @param mealType MEAL_MORNING, MEAL_AFTERNOON, or MEAL_EVENING
+     * @param mealType MEAL_BREAKFAST, MEAL_LUNCH, or MEAL_DINNER
      * @param items    List of food items from the AI scan
      */
     public static void addMeal(Context context, int mealType, List<FoodItem> items) {
+        addMealByName(context, MEAL_NAMES[mealType], items);
+    }
+
+    /**
+     * Add a meal to today's log by meal name string.
+     * @param context  Android context
+     * @param mealName "Breakfast", "Lunch", "Dinner", "Morning", "Afternoon", or "Evening"
+     * @param items    List of food items from the AI scan
+     */
+    public static void addMealByName(Context context, String mealName, List<FoodItem> items) {
         DailyLog log = loadToday(context);
-        String mealName = MEAL_NAMES[mealType];
 
         // Remove existing entry for this meal (replace it)
         log.meals.removeIf(m -> m.mealName.equals(mealName));

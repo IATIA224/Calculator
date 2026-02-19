@@ -128,12 +128,12 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/meal_morning"
+                                    android:text="Breakfast"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
 
                                 <TextView
-                                    android:id="@+id/tvMorningCal"
+                                    android:id="@+id/tvBreakfastCal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
@@ -158,12 +158,12 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/meal_afternoon"
+                                    android:text="Lunch"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
 
                                 <TextView
-                                    android:id="@+id/tvAfternoonCal"
+                                    android:id="@+id/tvLunchCal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
@@ -188,12 +188,12 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/meal_evening"
+                                    android:text="Dinner"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
 
                                 <TextView
-                                    android:id="@+id/tvEveningCal"
+                                    android:id="@+id/tvDinnerCal"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
@@ -205,18 +205,48 @@
 
                         </LinearLayout>
 
-                        <!-- Edit profile link -->
-                        <TextView
-                            android:id="@+id/tvEditProfile"
-                            android:layout_width="wrap_content"
+                        <!-- Navigation Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginTop="4dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:text="@string/edit_profile"
-                            android:textColor="@color/primary"
-                            android:textSize="@dimen/text_caption" />
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnStats"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Statistics"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnMeals"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Today's Meals"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvEditProfile"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:paddingTop="12dp"
+                                android:paddingBottom="12dp"
+                                android:text="@string/edit_profile"
+                                android:textColor="@color/primary"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -465,32 +495,32 @@
                             android:visibility="gone">
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnAddMorning"
+                                android:id="@+id/btnAddBreakfast"
                                 style="@style/Widget.MaterialComponents.Button.TextButton"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/add_morning"
+                                android:text="+ Breakfast"
                                 android:textSize="11sp"
                                 app:iconSize="16dp" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnAddAfternoon"
+                                android:id="@+id/btnAddLunch"
                                 style="@style/Widget.MaterialComponents.Button.TextButton"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/add_afternoon"
+                                android:text="+ Lunch"
                                 android:textSize="11sp"
                                 app:iconSize="16dp" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnAddEvening"
+                                android:id="@+id/btnAddDinner"
                                 style="@style/Widget.MaterialComponents.Button.TextButton"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/add_evening"
+                                android:text="+ Dinner"
                                 android:textSize="11sp"
                                 app:iconSize="16dp" />
 

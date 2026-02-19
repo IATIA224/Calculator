@@ -6,6 +6,7 @@ build/
 
 # Local properties
 local.properties
+secrets.properties
 
 # IDE
 .idea/
