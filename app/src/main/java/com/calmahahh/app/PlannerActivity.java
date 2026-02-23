@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -33,6 +34,7 @@ import java.util.concurrent.Executors;
 public class PlannerActivity extends AppCompatActivity implements PlanAdapter.OnPlanActionListener {
 
     private RecyclerView recyclerPlans;
+    private TextView tvNoPlans;
     private PlanAdapter planAdapter;
     private final List<Plan> plans = new ArrayList<>();
     private final Map<Long, Integer> taskCounts = new HashMap<>();
@@ -59,6 +61,8 @@ public class PlannerActivity extends AppCompatActivity implements PlanAdapter.On
         planAdapter = new PlanAdapter(plans, taskCounts, this);
         recyclerPlans.setAdapter(planAdapter);
 
+        tvNoPlans = findViewById(R.id.tvNoPlans);
+
         FloatingActionButton fab = findViewById(R.id.fabAddPlan);
         fab.setOnClickListener(v -> showCreatePlanDialog());
     }
@@ -82,6 +86,10 @@ public class PlannerActivity extends AppCompatActivity implements PlanAdapter.On
                 taskCounts.clear();
                 taskCounts.putAll(counts);
                 planAdapter.notifyDataSetChanged();
+                
+                // Show/hide placeholder
+                tvNoPlans.setVisibility(plans.isEmpty() ? View.VISIBLE : View.GONE);
+                recyclerPlans.setVisibility(plans.isEmpty() ? View.GONE : View.VISIBLE);
             });
         });
     }
