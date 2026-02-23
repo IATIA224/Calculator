@@ -252,25 +252,43 @@ public class StatsActivity extends AppCompatActivity {
     private void loadStreakData() {
         String today = dateFormat.format(Calendar.getInstance().getTime());
         executor.execute(() -> {
-            // Count consecutive days within goal (simple approach)
-            int streak = 0;
+            // Calculate consecutive days with calorie entries and their accuracy percentages
+            int streakDays = 0;
+            double totalAccuracy = 0.0;
             Calendar cal = Calendar.getInstance();
             int target = userProfile.getTargetCalories();
 
             for (int i = 0; i < 365; i++) {
                 String dateStr = dateFormat.format(cal.getTime());
                 double cals = mealEntryDao.getTotalCaloriesForDate(dateStr);
-                if (cals > 0 && cals <= target * 1.1) {
-                    streak++;
+                
+                // Only count days with actual calorie entries
+                if (cals > 0) {
+                    // Calculate accuracy percentage (not capped)
+                    double accuracy = (cals / target) * 100;
+                    totalAccuracy += accuracy;
+                    streakDays++;
                     cal.add(Calendar.DAY_OF_YEAR, -1);
                 } else {
+                    // Stop streak when there are no entries
                     break;
                 }
             }
 
-            int finalStreak = streak;
+            // Calculate average accuracy for the streak
+            double averageAccuracy = streakDays > 0 ? (totalAccuracy / streakDays) : 0;
+            int finalStreakDays = streakDays;
+            double finalAverageAccuracy = averageAccuracy;
+            
             mainHandler.post(() -> {
-                tvStreak.setText(finalStreak + " day" + (finalStreak != 1 ? "s" : ""));
+                if (finalStreakDays > 0) {
+                    tvStreak.setText(String.format(Locale.US, "%d day%s • %.0f%% avg", 
+                        finalStreakDays, 
+                        finalStreakDays != 1 ? "s" : "",
+                        finalAverageAccuracy));
+                } else {
+                    tvStreak.setText("0 days");
+                }
             });
         });
     }

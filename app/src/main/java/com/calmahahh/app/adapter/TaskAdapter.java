@@ -1,5 +1,6 @@
 package com.calmahahh.app.adapter;
 
+import android.app.AlertDialog;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,10 +78,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             holder.tvWorkoutDetails.setVisibility(View.GONE);
         }
 
+        // Show info icon if notes are available
+        if (task.getNotes() != null && !task.getNotes().isEmpty()) {
+            holder.btnNoteInfo.setVisibility(View.VISIBLE);
+            holder.btnNoteInfo.setOnClickListener(v -> showNotesDialog(v.getContext(), task));
+        } else {
+            holder.btnNoteInfo.setVisibility(View.GONE);
+        }
+
         holder.cbCompleted.setOnCheckedChangeListener((buttonView, isChecked) ->
                 listener.onTaskChecked(task, isChecked));
         holder.btnEditTask.setOnClickListener(v -> listener.onEditTask(task));
         holder.btnDeleteTask.setOnClickListener(v -> listener.onDeleteTask(task));
+    }
+
+    private void showNotesDialog(android.content.Context context, PlanTask task) {
+        new AlertDialog.Builder(context)
+                .setTitle(task.getTaskName())
+                .setMessage(task.getNotes())
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     private void setCategoryColor(TextView tv, String category) {
@@ -119,7 +136,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox cbCompleted;
         TextView tvTaskName, tvCategory, tvTime, tvWorkoutDetails;
-        ImageButton btnEditTask, btnDeleteTask;
+        ImageButton btnNoteInfo, btnEditTask, btnDeleteTask;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -128,6 +145,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvTime = itemView.findViewById(R.id.tvTime);
             tvWorkoutDetails = itemView.findViewById(R.id.tvWorkoutDetails);
+            btnNoteInfo = itemView.findViewById(R.id.btnNoteInfo);
             btnEditTask = itemView.findViewById(R.id.btnEditTask);
             btnDeleteTask = itemView.findViewById(R.id.btnDeleteTask);
         }

@@ -205,6 +205,98 @@
             android:text="Enable Reminder (10 min before)"
             android:textColor="@color/text_primary" />
 
+        <!-- Day Selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Assign to Days"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioDaySpecific"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Specific Days"
+                android:textColor="@color/text_primary" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupDays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
+                app:singleSelection="false"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMonday"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mon" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTuesday"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tue" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipWednesday"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wed" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipThursday"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thu" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFriday"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fri" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSaturday"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sat" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSunday"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sun" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioDayAllDays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="All Days"
+                android:textColor="@color/text_primary" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

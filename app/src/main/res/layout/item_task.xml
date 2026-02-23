@@ -80,6 +80,16 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/btnNoteInfo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="View notes"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:tint="@color/accent"
+            android:visibility="gone" />
+
+        <ImageButton
             android:id="@+id/btnEditTask"
             android:layout_width="32dp"
             android:layout_height="32dp"

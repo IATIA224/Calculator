@@ -159,10 +159,29 @@ public class PlanDetailActivity extends AppCompatActivity implements TaskAdapter
         EditText etEndTime = dialogView.findViewById(R.id.etEndTime);
         EditText etNotes = dialogView.findViewById(R.id.etNotes);
         SwitchMaterial switchReminder = dialogView.findViewById(R.id.switchReminder);
+        
+        // Day selection radio buttons and chips
+        com.google.android.material.radiobutton.MaterialRadioButton radioDaySpecific = dialogView.findViewById(R.id.radioDaySpecific);
+        com.google.android.material.radiobutton.MaterialRadioButton radioDayAllDays = dialogView.findViewById(R.id.radioDayAllDays);
+        ChipGroup chipGroupDays = dialogView.findViewById(R.id.chipGroupDays);
 
         // Show/hide workout fields based on category selection
         chipCategory.setOnCheckedChangeListener((group, checkedId) -> {
             layoutWorkout.setVisibility(checkedId == R.id.chipWorkout ? View.VISIBLE : View.GONE);
+        });
+
+        // Day selection listeners
+        radioDaySpecific.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            chipGroupDays.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
+        
+        radioDayAllDays.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Check all day chips when "All Days" is selected
+                for (int i = 0; i < chipGroupDays.getChildCount(); i++) {
+                    chipGroupDays.getChildAt(i).performClick();
+                }
+            }
         });
 
         // Time picker for start time
@@ -219,6 +238,10 @@ public class PlanDetailActivity extends AppCompatActivity implements TaskAdapter
         } else {
             etStartTime.setText("08:00");
             etEndTime.setText("08:30");
+            // Default to "Specific Days" and check the current selected day
+            radioDaySpecific.setChecked(true);
+            chipGroupDays.setVisibility(View.VISIBLE);
+            selectDayChip(chipGroupDays, selectedDay);
         }
 
         new AlertDialog.Builder(this)
@@ -247,6 +270,13 @@ public class PlanDetailActivity extends AppCompatActivity implements TaskAdapter
                     String notes = etNotes.getText().toString().trim();
                     boolean reminder = switchReminder.isChecked();
 
+                    // Get selected days
+                    List<String> selectedDays = getSelectedDays(chipGroupDays);
+                    if (selectedDays.isEmpty()) {
+                        Toast.makeText(this, "Please select at least one day", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     final int finalDuration = duration;
 
                     executor.execute(() -> {
@@ -262,17 +292,20 @@ public class PlanDetailActivity extends AppCompatActivity implements TaskAdapter
                             existing.setReminderEnabled(reminder);
                             planTaskDao.update(existing);
                         } else {
-                            PlanTask task = new PlanTask(planId, selectedDay, name, category);
-                            task.setSets(sets);
-                            task.setReps(reps);
-                            task.setIntensity(intensity);
-                            task.setStartTime(startTime);
-                            task.setDurationMinutes(finalDuration);
-                            task.setNotes(notes);
-                            task.setReminderEnabled(reminder);
-                            task.setOrderIndex(tasks.size());
-                            long taskId = planTaskDao.insert(task);
-                            task.setId(taskId);
+                            // Create tasks for each selected day
+                            for (String day : selectedDays) {
+                                PlanTask task = new PlanTask(planId, day, name, category);
+                                task.setSets(sets);
+                                task.setReps(reps);
+                                task.setIntensity(intensity);
+                                task.setStartTime(startTime);
+                                task.setDurationMinutes(finalDuration);
+                                task.setNotes(notes);
+                                task.setReminderEnabled(reminder);
+                                task.setOrderIndex(tasks.size());
+                                long taskId = planTaskDao.insert(task);
+                                task.setId(taskId);
+                            }
                         }
 
                         // Schedule/cancel notification
@@ -394,5 +427,39 @@ public class PlanDetailActivity extends AppCompatActivity implements TaskAdapter
     protected void onDestroy() {
         super.onDestroy();
         executor.shutdown();
+    }
+
+    private List<String> getSelectedDays(ChipGroup chipGroupDays) {
+        List<String> days = new ArrayList<>();
+        int[] chipIds = {R.id.chipMonday, R.id.chipTuesday, R.id.chipWednesday, 
+                         R.id.chipThursday, R.id.chipFriday, R.id.chipSaturday, R.id.chipSunday};
+        String[] dayNames = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        
+        for (int i = 0; i < chipIds.length; i++) {
+            com.google.android.material.chip.Chip chip = chipGroupDays.findViewById(chipIds[i]);
+            if (chip != null && chip.isChecked()) {
+                days.add(dayNames[i]);
+            }
+        }
+        return days;
+    }
+
+    private void selectDayChip(ChipGroup chipGroupDays, String dayName) {
+        int chipId = -1;
+        switch (dayName) {
+            case "Monday": chipId = R.id.chipMonday; break;
+            case "Tuesday": chipId = R.id.chipTuesday; break;
+            case "Wednesday": chipId = R.id.chipWednesday; break;
+            case "Thursday": chipId = R.id.chipThursday; break;
+            case "Friday": chipId = R.id.chipFriday; break;
+            case "Saturday": chipId = R.id.chipSaturday; break;
+            case "Sunday": chipId = R.id.chipSunday; break;
+        }
+        if (chipId != -1) {
+            com.google.android.material.chip.Chip chip = chipGroupDays.findViewById(chipId);
+            if (chip != null) {
+                chip.setChecked(true);
+            }
+        }
     }
 }

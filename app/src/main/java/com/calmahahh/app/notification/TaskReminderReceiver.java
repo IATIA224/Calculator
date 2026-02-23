@@ -5,9 +5,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
+import android.content.pm.PackageManager;
 
 import com.calmahahh.app.R;
 import com.calmahahh.app.TodayActivity;
@@ -43,6 +47,15 @@ public class TaskReminderReceiver extends BroadcastReceiver {
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify((int) taskId, builder.build());
+        
+        // Check permission before notifying (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                notificationManager.notify((int) taskId, builder.build());
+            }
+        } else {
+            notificationManager.notify((int) taskId, builder.build());
+        }
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CalMahAhh</string>
+    <string name="app_name">CAPY - Calorie estimator and scheduler</string>
+    <string name="app_subtitle">Track nutrition, plan meals, and organize your fitness routine</string>
     <string name="food_image_preview">Food image preview</string>
     <string name="btn_camera">Camera</string>
     <string name="btn_gallery">Gallery</string>

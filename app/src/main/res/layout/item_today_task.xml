@@ -88,6 +88,19 @@
 
         </LinearLayout>
 
+        <!-- Info Icon for Notes -->
+        <ImageButton
+            android:id="@+id/btnNoteInfo"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="View notes"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:tint="@color/accent"
+            android:visibility="gone" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
